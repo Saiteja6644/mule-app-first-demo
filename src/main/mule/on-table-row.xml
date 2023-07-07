@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="b6bd81fb-9485-4af7-a822-115078699fae" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="muletrainingdb" />
+	</db:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="facf6d75-d59e-48a0-8a01-38666cb5a81e" >
+		<file:connection workingDir="C:\Users\SBALDAAR\Desktop\New folder" />
+	</file:config>
+	<flow name="on-table-rowFlow" doc:id="b5fd224c-056c-445b-a0f4-73904950a37d" >
+		<db:listener doc:name="On Table Row" doc:id="cc6991d8-1527-4406-b74b-35594b771aa6" config-ref="Database_Config" table="product" watermarkColumn="product_id" idColumn="product_id">
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" startDelay="2"/>
+			</scheduling-strategy>
+		</db:listener>
+		<ee:transform doc:name="Transform Message" doc:id="27cae14e-b93c-4683-8ad9-5f3d7fd6056d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json	
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="9a44a205-4646-4820-8b34-7b9609f5d11a" config-ref="File_Config" path="C:\Users\SBALDAAR\Desktop\New folder\db.txt" mode="APPEND"/>
+		<logger level="INFO" doc:name="Logger" doc:id="8c93e00b-3770-467b-8c3d-82b71f885698" message="#[payload]"/>
+	</flow>
+</mule>
