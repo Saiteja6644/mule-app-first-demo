@@ -4,7 +4,7 @@
 
 	<groupId>com.mycompany</groupId>
 	<artifactId>on-table-row</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version> 
 	<packaging>mule-application</packaging>
 
 	<name>on-table-row</name>
